@@ -1,0 +1,247 @@
+﻿@using System.Text.RegularExpressions
+@model AgiCredAju79.Repositories.Models.NotaEmprestimo
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+<script src="~/js/format-coin.js"></script>
+
+<p style="color:#888888">Data do empréstimo @String.Format("{0:dd/MM/yyyy}", Model.DataDoEmprestimo) 
+    <br>
+    Total de juros pago <span style="color:green">@Model.JurosPagosTotal.ToString("C")</span></p>
+
+<h4>Em aberto: <span style="color:green">@ViewBag.valorEmAberto.ToString("C")</span></h4>
+<h4>A Pagar Hoje: <span style="color:green">@ViewBag.valorAPagarHoje.ToString("C")</span></h4>
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+            <input type="hidden" asp-for="Id" />
+
+            <div class="form-group">
+                <label class="control-label">Situação</label>
+                <select asp-for="Categoria" class="custom-select custom-select-lg form-control form-control-lg" aria-label=".form-select-lg example">
+                    <option selected>@Model.Categoria</option>
+                    <option value="EmDia">Em dia</option>
+                    <option value="NaoPago">Não Pago</option>
+                    <option value="PromessaPAG">PromessaPAG</option>
+                    <option value="Perdido">Perdido</option>
+                </select>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <div class="row g-3">
+                    <div class="col">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Celular" class="control-label"></label>
+                        @{
+                            var numberForWhats = Regex.Replace(Model.Celular ?? "", @"\D", "");
+                        }
+                        <a href="http://wa.me/@numberForWhats">
+                            <img style="width: 7%" src="https://static.whatsapp.net/rsrc.php/v4/yz/r/ujTY9i_Jhs1.png">
+                        </a>
+                        <input id="celular" asp-for="Celular" class="form-control" />
+                        <span asp-validation-for="Celular" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row g-3">
+                    <div class="col">
+                        <label asp-for="CPF" class="control-label"></label>
+                        <input asp-for="CPF" class="form-control" />
+                        <span asp-validation-for="CPF" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label class="control-label">Indicação</label>
+                        <input asp-for="Indicacao" class="form-control" />
+                        <span asp-validation-for="Indicacao" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <label class="control-label">Tipo do empréstimo ex: Parcelado/PagamentoUnico</label>
+                <input asp-for="TipoDeEmprestimo" class="form-control" />
+                <span asp-validation-for="TipoDeEmprestimo" class="text-danger"></span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="control-label"><span style="color: green">Data fixa Do Pagamento</span></label>
+                    <input asp-for="DataDoPagamento" class="form-control" />
+                    <span asp-validation-for="DataDoPagamento" class="text-danger"></span>
+                </div>
+                <div class="col-md-4">
+                    <label class="control-label">Valor Do empréstimo</label>
+                    <input type="hidden" asp-for="ValorDoEmprestimo">
+                    <input value="@Model.ValorDoEmprestimo.ToString("C")" class="form-control" disabled />
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Juros</label>
+                    <input asp-for="JuroMensalPorcentagem" class="form-control" />
+                    <span asp-validation-for="JuroMensalPorcentagem" class="text-danger"></span>
+                </div>
+            </div>
+            <hr />
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="control-label">Amortizado</label>
+                    <input value="@Model.Armotizado.ToString("C")" class="form-control" disabled />
+                    <input type="hidden" asp-for="Armotizado" class="form-control" />
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="form-check form-switch">
+                        <input class="form-check-input" type="checkbox" role="switch" id="checkbox-area-pagamento-desconto" onclick="checkboxAreaPagamentoDesconto();">
+                        <label class="form-check-label" for="checkbox-area-pagamento-desconto">Desconto</label>
+                    </div>
+                </div>
+                <div id="area-pagamento-desconto" class="bg-gradient-warning" style="display: none;">
+                    <div class="form-group">
+                        <label class="control-label">Desconto</label>
+                        <input id="pagamentoDesconto" class="form-control" placeholder="$0.00" style="width: 128px;" />
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Descricao</label>
+                        <textarea id="pagamentoDescontoDescricao" class="form-control" rows="3"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row g-3 bg-gradient-success" style="margin-top: 1%">
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Tipo</label>
+                        <select id="pagamento-tipo" class="custom-select custom-select form-control">
+                            <option value="juros">Juro</option>
+                            <option value="jurosExtra">Juro extra</option>
+                            <option value="amortizacao">Amortização</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label class="control-label">Pagou em</label>
+                        <input id="pagamento-data" class="form-control" type="datetime-local" value="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")">
+                    </div>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Valor</label>
+                    <input id="pagamentoValor" class="form-control" placeholder="$0.00" />
+                </div>
+                <div id="pagamentoDivBtn" class="col-md-2" style="margin-top: 7.5%;">
+                    <a onclick="setPagamento();" class="btn btn-primary" style="background-color: #0600ff; border-color: #000000;">Confirme</a>
+                </div>
+            </div>
+
+            <hr class="featurette-divider">
+
+            <div class="accordion accordion-flush" id="accordionFlushExample">
+                <div class="accordion-item">
+                    <h2 class="accordion-header">
+                        <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                            Pagamentos
+                        </button>
+                    </h2>
+                    <div id="flush-collapseOne" class="accordion-collapse collapse" data-bs-parent="#accordionFlushExample">
+                        <div class="accordion-body">
+                            <div class="table-responsive">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th>Tipo</th>
+                                            <th>Data</th>
+                                            <th>Status</th>
+                                            <th>Desconto</th>
+                                            <th>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001q.044.06.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1 1 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0" />
+                                                </svg>
+                                            </th>
+                                            <th>Valor</th>
+                                            <th>
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-text" viewBox="0 0 16 16">
+                                                    <path d="M5 4a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm-.5 2.5A.5.5 0 0 1 5 6h6a.5.5 0 0 1 0 1H5a.5.5 0 0 1-.5-.5M5 8a.5.5 0 0 0 0 1h6a.5.5 0 0 0 0-1zm0 2a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1z" />
+                                                    <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2zm10-1H4a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1" />
+                                                </svg>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>x</td>
+                                            <td>x</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr />
+            <p>calcular juros diario por atraso</p>
+
+
+
+
+
+
+
+
+            <hr />
+
+            <div class="row g-3">
+                <div class="col-md-6">
+                    <label class="control-label">Promessa De Pagamento</label>
+                    <input asp-for="DataDePromessaDePagamento" class="form-control" />
+                    <span asp-validation-for="DataDePromessaDePagamento" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label class="control-label">Acordo</label>
+                    <input asp-for="DataDoAcordo" class="form-control" />
+                    <span asp-validation-for="DataDoAcordo" class="text-danger"></span>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <label class="control-label">Observação</label>
+                <textarea asp-for="Observacao" class="form-control" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="Confirme" class="btn btn-primary" />
+            </div>
+
+        </form>
+    </div>
+</div>
+
+<script>
+    formatCoin("pagamentoDesconto");
+    formatCoin("pagamentoValor");
+</script>
+
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="~/js/EditPagamento.js"></script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

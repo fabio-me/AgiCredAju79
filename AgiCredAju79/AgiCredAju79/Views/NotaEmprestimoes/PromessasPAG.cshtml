@@ -1,0 +1,77 @@
+﻿@model IEnumerable<AgiCredAju79.Repositories.Models.NotaEmprestimo>
+
+@using System.Text.RegularExpressions
+
+@{
+    ViewData["Title"] = "PromessasPAG";
+}
+
+<h3>Empréstimos PromessasPAG: @Model.Count().ToString()</h3>
+
+<div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Nome)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Celular)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TipoDeEmprestimo)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DataDoPagamento)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ValorDoEmprestimo)
+                </th>
+                <th>
+                    Juros%
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Nome)
+                    </td>
+                    <td>
+                        @item.Celular
+
+                        @{
+                            var numberForWhats = Regex.Replace(item.Celular ?? "", @"\D", "");
+                        }
+                        <a href="http://wa.me/@numberForWhats">
+                            <img style="width: 10%" src="https://static.whatsapp.net/rsrc.php/v4/yz/r/ujTY9i_Jhs1.png">
+                        </a>
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TipoDeEmprestimo)
+                    </td>
+                    <td>
+                        @String.Format("{0:dd/MM/yyyy}", item.DataDoPagamento)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.ValorDoEmprestimo)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.JuroMensalPorcentagem)%
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-secondary btn-icon-split">
+                            <span class="icon text-white-50">
+                                <i class="fas fa-arrow-right"></i>
+                            </span>
+                            <span class="text">Abrir</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

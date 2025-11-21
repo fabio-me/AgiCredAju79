@@ -15,7 +15,7 @@ namespace AgiCredAju79.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            return PartialView();
         }
 
         public IActionResult Privacy()

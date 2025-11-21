@@ -1,0 +1,126 @@
+﻿@model AgiCredAju79.Repositories.Models.NotaEmprestimo
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<script src="https://unpkg.com/imask"></script>
+
+<h3>Novo empréstimo</h3>
+
+<hr />
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="row g-3">
+                    <div class="col">
+                        <label asp-for="Nome" class="control-label"></label>
+                        <input asp-for="Nome" class="form-control" />
+                        <span asp-validation-for="Nome" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label asp-for="Celular" class="control-label"></label>
+                        <input id="celular" asp-for="Celular" class="form-control" />
+                        <span asp-validation-for="Celular" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="row g-3">
+                    <div class="col">
+                        <label asp-for="CPF" class="control-label"></label>
+                        <input id="cpf" asp-for="CPF" class="form-control" />
+                        <span asp-validation-for="CPF" class="text-danger"></span>
+                    </div>
+                    <div class="col">
+                        <label class="control-label">Indicação</label>
+                        <input asp-for="Indicacao" class="form-control" />
+                        <span asp-validation-for="Indicacao" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <label class="control-label">Tipo do empréstimo ex: Parcelado/PagamentoUnico</label>
+                <input asp-for="TipoDeEmprestimo" class="form-control" />
+                <span asp-validation-for="TipoDeEmprestimo" class="text-danger"></span>
+            </div>
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <label class="control-label">Valor Do empréstimo</label>
+                    <input id="valorDoemprestimo" asp-for="ValorDoEmprestimo" class="form-control" placeholder="$0.00" />
+                    <span asp-validation-for="ValorDoEmprestimo" class="text-danger"></span>
+                </div>
+                <div class="col-md-2">
+                    <label class="control-label">Juros %</label>
+                    <input asp-for="JuroMensalPorcentagem" class="form-control" />
+                    <span asp-validation-for="JuroMensalPorcentagem" class="text-danger"></span>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <div class="row g-3">
+                    <div class="col-md-6>
+                        <label class="control-label">Data Do empréstimo ex: <span style="color: orange">Hoje</span></label>
+                        <input asp-for="DataDoEmprestimo" class="form-control" />
+                        <span asp-validation-for="DataDoEmprestimo" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+
+                        <!--
+
+                            criar function js para limitar o dia de 1 a 28
+
+                        -->
+
+                        <label class="control-label"><span style="color: green">Dia Do Pagamento</span></label>
+                        <input class="form-control" type="number" name="DiaDoPagamento" min="1" max="28">
+                    </div>
+                </div>
+            </div>
+            <hr />
+
+            <div class="form-group">
+                <label class="control-label">Observação</label>
+                <textarea asp-for="Observacao" class="form-control" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    IMask(document.getElementById('celular'), {
+        mask: '+55(00)90000-0000'
+    });
+
+    IMask(document.getElementById('cpf'), {
+        mask: '000.000.000-00'
+    });
+
+    const valorDoemprestimoInput = document.getElementById('valorDoemprestimo');
+    valorDoemprestimoInput.oninput = function (e) {
+        let value = e.target.value.replace(/\D/g, '');
+        if (value === '') {
+            e.target.value = '';
+            return;
+        }
+
+        value = Number(value) / 100;
+        e.target.value = value.toLocaleString('en-US', {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+            useGrouping: false
+        });
+    };
+</script>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
