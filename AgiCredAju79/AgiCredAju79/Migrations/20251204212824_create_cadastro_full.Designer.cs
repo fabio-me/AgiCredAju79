@@ -4,6 +4,7 @@ using AgiCredAju79.Repositories.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AgiCredAju79.Migrations
 {
     [DbContext(typeof(DbContextMariaDB))]
-    partial class DbContextMariaDBModelSnapshot : ModelSnapshot
+    [Migration("20251204212824_create_cadastro_full")]
+    partial class create_cadastro_full
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -21,6 +21,10 @@ namespace AgiCredAju79.Repositories.Contexts
             }
         }
 
+        public DbSet<Cadastro> Cadastro { get; set; }
+        public DbSet<CadastroNumeroDeContato> CadastroNumeroDeContato { get; set; }
+        public DbSet<CadastroEndereco> CadastroEndereco { get; set; }
+
         public DbSet<NotaEmprestimo> NotaEmprestimo { get; set; }
         public DbSet<Emprestimo> Emprestimo { get; set; }
         public DbSet<Pagamento> Pagamento { get; set; }
